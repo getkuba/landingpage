@@ -31,7 +31,7 @@ function App() {
             <div className="logo-sun">
               <div className="sun-center"></div>
             </div>
-            {sidebarOpen && <span className="logo-text">Veritas</span>}
+            {sidebarOpen && <span className="logo-text">Aletheia</span>}
           </div>
           <button
             className="sidebar-toggle"
@@ -157,7 +157,7 @@ function App() {
         </div>
 
         <footer className="main-footer">
-          <p>"Lux et Veritas" — Light and Truth</p>
+          <p>"Aletheia" — ἀλήθεια — Truth Unveiled</p>
         </footer>
       </main>
     </div>

@@ -1,9 +1,9 @@
 /* ============================================
-   PROOFMARKET - Court of Public Record
-   Justice-themed Truth Platform
+   CLAIMIT - Own Your Content
+   Reddit-style Content Ownership Platform
    ============================================ */
 
-/* CSS Variables - Legal Color Palette */
+/* CSS Variables - ProofMarket Color Palette */
 :root {
   --bg-primary: #1a1a2e;
   --bg-secondary: #16213e;
@@ -23,6 +23,10 @@
   --border: #2a3a5c;
   --border-light: #3a4a6c;
   --marble: #f5f5f0;
+  --reddit-orange: #ff4500;
+  --twitter-blue: #1da1f2;
+  --upvote: #ff8b60;
+  --downvote: #9494ff;
 }
 
 /* Reset */
@@ -41,186 +45,239 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
 }
 
 /* App Layout */
 .app {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* ============================================
-   SIDEBAR
+   HEADER
    ============================================ */
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--border);
-  transition: width 0.3s ease;
-  overflow: hidden;
-}
-
-.sidebar.open {
-  width: 260px;
-}
-
-.sidebar.collapsed {
-  width: 60px;
-}
-
-.sidebar-header {
+.header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 2px solid var(--brass);
-  min-height: 60px;
-  background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 48px;
 }
 
-.logo {
+.header-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.logo-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.menu-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
-.scale-left {
-  font-size: 1.75rem;
+.menu-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
   color: var(--brass);
   text-shadow: 0 0 10px var(--brass-glow);
 }
 
 .logo-text {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--marble);
   letter-spacing: 0.5px;
-  white-space: nowrap;
 }
 
-.sidebar-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  cursor: pointer;
+.search-container {
+  flex: 1;
+  max-width: 600px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 1rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 0 1rem;
   transition: all 0.2s;
 }
 
-.sidebar-toggle:hover {
+.search-container:focus-within {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 2px var(--brass-glow);
+}
+
+.search-icon {
+  font-size: 0.85rem;
+  margin-right: 0.5rem;
+}
+
+.search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.header-btn {
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.header-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
+  border-color: var(--border-light);
+}
+
+.header-btn.claim-btn {
+  background: linear-gradient(135deg, var(--brass) 0%, var(--brass-dim) 100%);
   border-color: var(--brass);
+  color: var(--bg-primary);
+}
+
+.header-btn.claim-btn:hover {
+  box-shadow: 0 2px 8px var(--brass-glow);
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   MAIN LAYOUT - 3 Column
+   ============================================ */
+.main-layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ============================================
+   LEFT SIDEBAR
+   ============================================ */
+.sidebar-left {
+  width: 270px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  transition: width 0.3s ease, transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-left.collapsed {
+  width: 0;
+  overflow: hidden;
 }
 
 .sidebar-nav {
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  padding: 0.75rem 0;
+}
+
+.nav-section {
+  padding: 0.5rem 0;
+}
+
+.nav-section:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-section h3 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.625rem 0.75rem;
+  padding: 0.6rem 1rem;
   color: var(--text-secondary);
   text-decoration: none;
-  border-radius: 6px;
   transition: all 0.2s;
   font-size: 0.9rem;
-  border-left: 3px solid transparent;
+  cursor: pointer;
 }
 
 .nav-item:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
-  border-left-color: var(--brass-dim);
 }
 
 .nav-item.active {
   background: var(--brass-glow);
   color: var(--brass);
-  border-left-color: var(--brass);
+  border-right: 3px solid var(--brass);
 }
 
 .nav-icon {
-  font-size: 1rem;
-  width: 20px;
+  font-size: 1.1rem;
+  width: 24px;
   text-align: center;
-  flex-shrink: 0;
 }
 
-.sidebar-section {
-  padding: 1rem;
-  border-top: 1px solid var(--border);
-  flex: 1;
-  overflow-y: auto;
+.nav-icon.reddit {
+  color: var(--reddit-orange);
 }
 
-.sidebar-section h3 {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--brass-dim);
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
+.nav-icon.twitter {
+  color: var(--twitter-blue);
 }
 
-.recent-list {
-  list-style: none;
+.nav-icon.medium {
+  color: #00ab6c;
 }
 
-.recent-list li {
-  margin-bottom: 0.25rem;
-}
-
-.recent-list a {
-  display: block;
-  padding: 0.5rem 0.75rem;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.8rem;
-  font-family: 'IBM Plex Mono', monospace;
-  border-radius: 4px;
-  transition: all 0.2s;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.recent-list a:hover {
-  background: var(--bg-hover);
-  color: var(--brass);
-}
-
-.sidebar-footer {
-  padding: 0.75rem;
-  border-top: 1px solid var(--border);
-  margin-top: auto;
+.nav-icon.youtube {
+  color: #ff0000;
 }
 
 /* ============================================
@@ -228,396 +285,454 @@ body {
    ============================================ */
 .main-content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background:
-    linear-gradient(180deg, var(--bg-primary) 0%, rgba(26, 26, 46, 0.95) 100%),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 50px,
-      rgba(201, 162, 39, 0.03) 50px,
-      rgba(201, 162, 39, 0.03) 51px
-    );
-}
-
-.main-header {
-  text-align: center;
-  padding: 1.5rem 2rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background: linear-gradient(180deg, var(--bg-secondary) 0%, transparent 100%);
-}
-
-.court-emblem {
-  font-size: 2.5rem;
-  color: var(--brass);
-  margin-bottom: 0.5rem;
-  text-shadow: 0 0 20px var(--brass-glow);
-}
-
-.main-header h1 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.5rem;
-  color: var(--marble);
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 0.25rem;
-}
-
-.header-quote {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-style: italic;
-  font-weight: 300;
-  color: var(--brass);
-  font-size: 0.85rem;
-  letter-spacing: 1px;
-}
-
-.content-area {
-  flex: 1;
   overflow-y: auto;
-  padding: 1.5rem 2rem 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-  width: 100%;
+  padding: 1rem;
+  background: var(--bg-primary);
+  min-width: 0;
 }
 
-/* ============================================
-   INPUT SECTION
-   ============================================ */
-.input-section {
-  margin-bottom: 2rem;
-}
-
-.input-container {
-  position: relative;
+/* Feed Tabs */
+.feed-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
   background: var(--bg-secondary);
-  border: 2px solid var(--border);
   border-radius: 8px;
-  overflow: hidden;
-  transition: border-color 0.2s;
+  margin-bottom: 1rem;
 }
 
-.input-container:focus-within {
-  border-color: var(--brass);
-  box-shadow: 0 0 0 3px var(--brass-glow);
-}
-
-.input-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  color: var(--brass);
-  padding: 0.75rem 1rem 0;
-  text-transform: uppercase;
-}
-
-.claim-input {
-  width: 100%;
-  padding: 0.75rem 1rem 1rem;
-  padding-right: 130px;
-  background: transparent;
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: none;
   border: none;
-  color: var(--text-primary);
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  resize: none;
-  outline: none;
-}
-
-.claim-input::placeholder {
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-.submit-btn {
-  position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  background: linear-gradient(135deg, var(--mahogany) 0%, var(--mahogany-dark) 100%);
-  border: 1px solid var(--brass);
-  border-radius: 6px;
-  color: var(--marble);
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.submit-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.4);
-  background: linear-gradient(135deg, var(--mahogany-dark) 0%, var(--mahogany) 100%);
-}
-
-.submit-icon {
-  font-size: 1rem;
-}
-
-/* ============================================
-   ACTION BUTTONS
-   ============================================ */
-.action-buttons {
-  display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  justify-content: center;
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.25rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 20px;
   color: var(--text-secondary);
   font-family: 'IBM Plex Sans', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.action-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  border-color: var(--border-light);
-}
-
-.action-btn.active {
-  background: var(--brass-glow);
-  border-color: var(--brass);
-  color: var(--brass);
-}
-
-.btn-icon {
-  font-size: 0.85rem;
-}
-
-/* ============================================
-   CASES FEED
-   ============================================ */
-.cases-feed {
-  margin-top: 1.5rem;
-}
-
-.feed-header {
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--brass);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.feed-header::before {
-  content: '⚖';
-  font-size: 1rem;
-  color: var(--brass);
-}
-
-.feed-header h2 {
-  font-family: 'Space Grotesk', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--marble);
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.cases-list {
+.tab:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.tab.active {
+  background: var(--bg-tertiary);
+  color: var(--brass);
+}
+
+/* Claims Feed */
+.claims-feed {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.case-card {
+/* Claim Card */
+.claim-card {
+  display: flex;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-left: 4px solid var(--brass);
-  border-radius: 6px;
-  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  overflow: hidden;
   transition: all 0.2s;
-  cursor: pointer;
 }
 
-.case-card:hover {
-  background: var(--bg-tertiary);
+.claim-card:hover {
   border-color: var(--border-light);
-  border-left-color: var(--brass);
-  transform: translateX(4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.case-header {
+/* Vote Column */
+.vote-column {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  background: var(--bg-tertiary);
+  min-width: 50px;
 }
 
-.case-number {
+.vote-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.vote-btn.up:hover {
+  color: var(--upvote);
+  transform: scale(1.2);
+}
+
+.vote-btn.down:hover {
+  color: var(--downvote);
+  transform: scale(1.2);
+}
+
+.vote-count {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--brass);
-  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 0.25rem 0;
 }
 
-.status-badge {
+/* Claim Content */
+.claim-content {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  min-width: 0;
+}
+
+.claim-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.source-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.2rem 0.6rem;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.65rem;
   font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.status-badge.hearing,
-.status-badge.deliberation {
-  background: rgba(234, 179, 8, 0.15);
-  color: var(--warning);
-  border: 1px solid rgba(234, 179, 8, 0.3);
+.source-badge.reddit {
+  background: rgba(255, 69, 0, 0.15);
+  color: var(--reddit-orange);
+  border: 1px solid rgba(255, 69, 0, 0.3);
 }
 
-.status-badge.appeal,
-.status-badge.review {
-  background: rgba(201, 162, 39, 0.15);
+.source-badge.twitter {
+  background: rgba(29, 161, 242, 0.15);
+  color: var(--twitter-blue);
+  border: 1px solid rgba(29, 161, 242, 0.3);
+}
+
+.subreddit {
   color: var(--brass);
-  border: 1px solid rgba(201, 162, 39, 0.3);
+  font-weight: 600;
 }
 
-.status-badge.upheld {
-  background: rgba(34, 197, 94, 0.15);
-  color: var(--success);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+.author {
+  color: var(--text-secondary);
 }
 
-.status-badge.dismissed {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--error);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+.time {
+  color: var(--text-muted);
 }
 
-.status-badge.guilty {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--error);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-}
-
-.case-title {
+.claim-title {
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
   line-height: 1.4;
+  cursor: pointer;
 }
 
-.case-meta {
+.claim-title:hover {
+  color: var(--brass);
+}
+
+.claim-preview {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.claim-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.footer-left {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.action-btn {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.3rem;
+  padding: 0.4rem 0.6rem;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.case-time {
+.action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.token-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
-  color: var(--text-muted);
-  letter-spacing: 0.3px;
+  font-weight: 500;
+}
+
+.token-badge.minted {
+  background: rgba(201, 162, 39, 0.15);
+  color: var(--brass);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+}
+
+.token-badge.pending {
+  background: rgba(234, 179, 8, 0.15);
+  color: var(--warning);
+  border: 1px solid rgba(234, 179, 8, 0.3);
 }
 
 /* ============================================
-   FOOTER
+   RIGHT SIDEBAR
    ============================================ */
-.main-footer {
-  padding: 1rem 2rem;
-  text-align: center;
-  border-top: 2px solid var(--brass);
-  background: var(--bg-secondary);
+.sidebar-right {
+  width: 320px;
+  padding: 1rem;
+  overflow-y: auto;
+  flex-shrink: 0;
 }
 
-.main-footer p {
-  font-family: 'IBM Plex Sans', sans-serif;
-  font-style: italic;
-  font-weight: 300;
-  font-size: 0.8rem;
+.widget {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.widget h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--brass);
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* Trending List */
+.trending-list {
+  list-style: none;
+}
+
+.trending-list li {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.trending-list li:last-child {
+  border-bottom: none;
+}
+
+.rank {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--brass);
+  min-width: 1.5rem;
+}
+
+.trend-title {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* How It Works */
+.how-it-works {
+  padding-left: 1.25rem;
+}
+
+.how-it-works li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.how-it-works li::marker {
+  color: var(--brass);
+  font-weight: 600;
+}
+
+/* CTA Widget */
+.cta-widget {
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+  border-color: var(--brass);
+}
+
+.cta-widget p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.cta-btn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, var(--brass) 0%, var(--brass-dim) 100%);
+  border: none;
+  border-radius: 20px;
+  color: var(--bg-primary);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--brass-glow);
 }
 
 /* ============================================
    RESPONSIVE
    ============================================ */
+@media (max-width: 1200px) {
+  .sidebar-right {
+    width: 280px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .sidebar-right {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
-  .sidebar.open {
+  .sidebar-left {
     position: fixed;
-    z-index: 100;
-    height: 100%;
+    left: 0;
+    top: 48px;
+    height: calc(100% - 48px);
+    z-index: 99;
+    transform: translateX(0);
   }
 
-  .sidebar.collapsed {
-    width: 0;
-    border: none;
+  .sidebar-left.collapsed {
+    transform: translateX(-100%);
+    width: 270px;
   }
 
-  .main-header h1 {
-    font-size: 1.2rem;
+  .header-right {
+    display: none;
   }
 
-  .court-emblem {
-    font-size: 2rem;
+  .search-container {
+    max-width: none;
   }
 
-  .content-area {
-    padding: 1rem;
+  .vote-column {
+    min-width: 40px;
+    padding: 0.5rem 0.25rem;
   }
 
-  .action-buttons {
-    flex-wrap: wrap;
-  }
-
-  .action-btn {
-    flex: 1;
-    min-width: 100px;
-    justify-content: center;
+  .claim-content {
+    padding: 0.5rem 0.75rem;
   }
 }
 
 @media (max-width: 480px) {
-  .submit-btn span:first-child {
+  .logo-text {
     display: none;
   }
 
-  .submit-btn {
-    padding: 0.6rem 0.75rem;
+  .search-container {
+    border-radius: 8px;
   }
 
-  .claim-input {
-    padding-right: 60px;
+  .claim-meta {
+    font-size: 0.7rem;
   }
 
-  .input-label {
-    font-size: 0.6rem;
+  .claim-title {
+    font-size: 0.9rem;
+  }
+
+  .footer-left {
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    padding: 0.3rem 0.4rem;
+    font-size: 0.7rem;
   }
 }
 
@@ -649,10 +764,12 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.case-card {
+.claim-card {
   animation: fadeIn 0.3s ease-out;
 }
 
-.case-card:nth-child(1) { animation-delay: 0.05s; }
-.case-card:nth-child(2) { animation-delay: 0.1s; }
-.case-card:nth-child(3) { animation-delay: 0.15s; }
+.claim-card:nth-child(1) { animation-delay: 0.05s; }
+.claim-card:nth-child(2) { animation-delay: 0.1s; }
+.claim-card:nth-child(3) { animation-delay: 0.15s; }
+.claim-card:nth-child(4) { animation-delay: 0.2s; }
+.claim-card:nth-child(5) { animation-delay: 0.25s; }
